@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>𝑹𝐨𝑟𝒐</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #0d0b1e; --night2: #1b1436; --rose: #e6a6c6; --gold: #e7c88f;
+      --pearl: #f8f2ef; --glass: rgba(255,255,255,0.06); --glass-b: rgba(255,255,255,0.14);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Tajawal',sans-serif;background:radial-gradient(ellipse at top, var(--night2), var(--night) 70%);
+      color:var(--pearl);overflow-x:hidden;min-height:100vh;position:relative;-webkit-font-smoothing:antialiased
+    }
+    .display{font-family:'Aref Ruqaa',serif}
+    #sky-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;will-change:transform}
+    .moon{
+      position:fixed;top:6%;left:8%;width:110px;height:110px;border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #fff8e7, var(--gold) 60%, #c9a56a 100%);
+      box-shadow:0 0 60px 20px rgba(231,200,143,0.35),0 0 120px 60px rgba(231,200,143,0.15);
+      z-index:0;animation:moonFloat 8s ease-in-out infinite;will-change:transform
+    }
+    @keyframes moonFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    .mouse-trail-heart{
+      position:fixed;pointer-events:none;z-index:9999;font-size:14px;opacity:0.9;
+      animation:trailFade 0.8s ease-out forwards;will-change:transform,opacity
+    }
+    @keyframes trailFade{to{transform:translateY(-30px) scale(0.3);opacity:0}}
+    #intro{
+      position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;
+      background:radial-gradient(ellipse at center, var(--night2), var(--night));
+      transition:opacity 1.2s ease,visibility 0s 1.2s;text-align:center;padding:20px
+    }
+    #intro.hidden{opacity:0;visibility:hidden}
+    #intro h1{
+      font-size:clamp(22px,4vw,36px);font-weight:400;color:var(--rose);
+      text-shadow:0 0 25px rgba(230,166,198,0.6);animation:softIn 2.2s ease forwards
+    }
+    @keyframes softIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    main{position:relative;z-index:1}
+    section{
+      min-height:100vh;padding:80px 6vw;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;position:relative;text-align:center;contain:content
+    }
+    .glass{
+      background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,0.35)
+    }
+    .eyebrow{font-size:13px;letter-spacing:4px;color:var(--gold);opacity:0.85;margin-bottom:14px}
+    .section-title{
+      font-family:'Aref Ruqaa',serif;font-size:clamp(28px,5vw,48px);color:var(--pearl);
+      margin-bottom:10px;text-shadow:0 0 30px rgba(230,166,198,0.3)
+    }
+    .section-sub{max-width:640px;color:rgba(248,242,239,0.75);font-size:15px;line-height:2;margin-bottom:44px}
+    #hero .hero-title{
+      font-family:'Aref Ruqaa',serif;font-size:clamp(30px,7vw,64px);
+      background:linear-gradient(120deg, var(--gold), var(--rose) 60%, #fff);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 0 30px rgba(230,166,198,0.4));margin-bottom:26px
+    }
+    .btn{
+      font-family:'Tajawal',sans-serif;background:linear-gradient(120deg, var(--rose), var(--gold));
+      color:var(--night);border:none;padding:14px 42px;border-radius:40px;font-size:15px;
+      font-weight:700;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease;
+      box-shadow:0 8px 24px rgba(230,166,198,0.25);will-change:transform
+    }
+    .btn:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(230,166,198,0.4)}
+    .btn-ghost{background:transparent;border:1px solid var(--glass-b);color:var(--pearl);box-shadow:none;font-weight:500}
+    .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none}
+    @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+    #messages .stage{width:min(680px,90vw);min-height:140px;display:flex;align-items:center;justify-content:center;padding:40px 30px}
+    #typewriter-text{font-size:clamp(18px,3vw,24px);line-height:1.9;color:var(--rose);font-family:'Aref Ruqaa',serif}
+    .cursor{display:inline-block;animation:blink 1s step-end infinite;color:var(--gold)}
+    @keyframes blink{50%{opacity:0}}
+    .poem-grid{display:flex;flex-direction:column;gap:26px;width:min(720px,92vw)}
+    .poem-card{padding:34px 30px;text-align:right;cursor:pointer;transition:transform .3s ease}
+    .poem-card:hover{transform:translateY(-4px)}
+    .poem-card p{line-height:2.3;color:rgba(248,242,239,0.85);font-size:15px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+    .poem-card.open p{-webkit-line-clamp:unset}
+    .toggle{margin-top:12px;font-size:12px;color:var(--rose)}
+    .letters-wrap{width:min(720px,92vw)}
+    .letter-nav{display:flex;justify-content:center;gap:10px;margin-bottom:26px;flex-wrap:wrap}
+    .letter-nav button{background:var(--glass);border:1px solid var(--glass-b);color:var(--pearl);padding:8px 18px;border-radius:20px;font-size:13px;cursor:pointer}
+    .letter-nav button.active{background:linear-gradient(120deg,var(--rose),var(--gold));color:var(--night);font-weight:700}
+    .letter-box{padding:40px 34px;text-align:right;min-height:200px}
+    #journal .journal-card{width:min(560px,90vw);padding:50px 34px;cursor:pointer;transition:transform .3s ease}
+    #journal .journal-card p{font-size:19px;line-height:2;color:var(--rose);min-height:80px}
+    .counter-grid{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;width:min(760px,92vw)}
+    .counter-card{padding:34px 28px;flex:1;min-width:180px}
+    .counter-num{font-size:clamp(28px,5vw,42px);font-weight:800;color:var(--gold)}
+    .stars-field{position:relative;width:min(800px,94vw);height:380px}
+    .wish-star{position:absolute;font-size:20px;cursor:pointer;background:none;border:none;filter:drop-shadow(0 0 6px rgba(231,200,143,0.7));animation:twinkle 3s ease-in-out infinite}
+    @keyframes twinkle{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+    #wish-popup{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;background:rgba(13,11,30,0.7);backdrop-filter:blur(6px);padding:20px}
+    #wish-popup.show{display:flex}
+    #garden{position:relative;overflow:hidden}
+    .garden-field{position:relative;width:100%;height:50vh;min-height:340px}
+    .garden-heart{position:absolute;font-size:22px;pointer-events:none;will-change:transform,opacity;opacity:0;animation:heartPop 0.6s ease-out forwards}
+    @keyframes heartPop{0%{opacity:1;transform:scale(0.8)}100%{opacity:0;transform:translateY(-30px) scale(1.1)}}
+    #note-modal{position:fixed;inset:0;z-index:950;display:none;align-items:center;justify-content:center;background:rgba(13,11,30,0.75);backdrop-filter:blur(6px);padding:20px}
+    #note-modal.show{display:flex}
+    .note-box{width:min(480px,94vw);padding:36px 30px;text-align:center}
+    textarea{width:100%;min-height:140px;background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);border-radius:14px;color:var(--pearl);padding:16px;font-size:14px;resize:vertical}
+    #music-toggle,#back-top{position:fixed;z-index:800;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(10px);cursor:pointer;will-change:transform}
+    #music-toggle{bottom:22px;left:22px;width:52px;height:52px;border-radius:50%;font-size:20px}
+    #back-top{bottom:22px;right:22px;padding:12px 20px;border-radius:30px;font-size:12px}
+    .float-item{position:fixed;pointer-events:none;z-index:2;will-change:transform,opacity;animation:floatUp linear forwards}
+    @keyframes floatUp{0%{opacity:0;transform:translateY(0) rotate(0deg)}10%{opacity:0.8}90%{opacity:0.6}100%{opacity:0;transform:translateY(-110vh) translateX(var(--drift,20px)) rotate(360deg)}}
+    @media(max-width:600px){.moon{width:70px;height:70px;top:4%}section{padding:60px 5vw}}
+    @media(prefers-reduced-motion:reduce){.moon,.mouse-trail-heart,.wish-star,.garden-heart,.float-item{animation:none!important}}
+  </style>
+</head>
+<body>
+<div id="intro"><h1>💗<br>إلى أجمل صدفة دخلت حياتي...</h1></div>
+<canvas id="sky-canvas"></canvas>
+<div class="moon"></div>
+<audio id="bg-music" loop preload="none"><source src="monon.mp4" type="audio/mp4"></audio>
+<button id="music-toggle" title="تشغيل / إيقاف الموسيقى">🎵</button>
+<button id="back-top" class="btn btn-ghost">↑ البداية</button>
+<main>
+  <section id="hero">
+    <div class="eyebrow">صُنع خصيصًا من أجل</div>
+    <h1 class="hero-title">𝑹𝐨𝑟𝒐</h1>
+    <p class="hero-text">من أول تلميحة خجلى، من أول بوست كتبته وكانت كلماتك أول ما يصل إليه قلبي، بدأت حكايتنا. صرتِ النبض الذي أكتب له، والوطن الذي ألوذ به. كل حرف في هذا المكان صُنع من أجلك أنتِ فقط، يا أجمل أقداري.</p>
+    <button class="btn" id="start-btn">اضغطي هنا</button>
+  </section>
+  <section id="messages">
+    <div class="eyebrow">رسائل هادئة</div>
+    <h2 class="section-title">كلمات على مهل</h2>
+    <div class="stage glass"><p id="typewriter-text"></p></div>
+    <div id="msg-counter" style="margin-top:18px;font-size:12px;color:rgba(248,242,239,0.5)"></div>
+  </section>
+  <section id="poems">
+    <div class="eyebrow">قصائد</div>
+    <h2 class="section-title">حين تصبح الكلمات قليلة</h2>
+    <div class="poem-grid" id="poem-grid"></div>
+  </section>
+  <section id="letters">
+    <div class="eyebrow">رسائل</div>
+    <h2 class="section-title">رسائل لم تُرسل</h2>
+    <div class="letters-wrap"><div class="letter-nav" id="letter-nav"></div><div class="letter-box glass" id="letter-box"></div></div>
+  </section>
+  <section id="journal">
+    <div class="eyebrow">دفتر المشاعر</div>
+    <h2 class="section-title">صفحة تُقلب</h2>
+    <div class="journal-card glass" id="journal-card"><p id="journal-text">اضغطي لتقرأي أول سطر</p></div>
+  </section>
+  <section id="counter">
+    <div class="eyebrow">عداد</div>
+    <h2 class="section-title">أرقام لا تكفي</h2>
+    <div class="counter-grid">
+      <div class="counter-card glass"><div class="counter-num" id="c-beats">0</div><div class="counter-label">دقة قلب ❤️</div></div>
+      <div class="counter-card glass"><div class="counter-num" id="c-think">0</div><div class="counter-label">مرة فكرت فيكِ</div></div>
+      <div class="counter-card glass"><div class="counter-num" id="c-miss">0</div><div class="counter-label">مرة اشتقت لكِ</div></div>
+    </div>
+  </section>
+  <section id="wishsky">
+    <div class="eyebrow">سماء الأمنيات</div>
+    <h2 class="section-title">لكل نجمة حكاية</h2>
+    <div class="stars-field" id="stars-field"></div>
+  </section>
+  <section id="garden">
+    <div class="eyebrow">حديقة القلوب</div>
+    <h2 class="section-title">حركي الماوس</h2>
+    <div class="garden-field" id="garden-field"></div>
+  </section>
+  <section id="write-wish">
+    <div class="eyebrow">للكتابة وحدها</div>
+    <h2 class="section-title">اكتبي أمنيتك</h2>
+    <button class="btn" id="btn-open-note">اكتبي أمنيتك</button>
+  </section>
+</main>
+<div id="wish-popup"><div class="box glass"><button class="close-x" onclick="closeWishPopup()">×</button><p id="wish-popup-text"></p><button class="btn btn-ghost" onclick="closeWishPopup()">إغلاق</button></div></div>
+<div id="note-modal"><div class="note-box glass"><button class="close-x" onclick="closeNoteModal()">×</button><h3>أمنيتك الصغيرة</h3><textarea id="note-textarea" placeholder="اكتبي هنا..."></textarea><div class="note-actions"><button class="btn" id="btn-save-note">احتفظي بها</button><button class="btn btn-ghost" onclick="closeNoteModal()">إغلاق</button></div><div id="note-saved" style="display:none;margin-top:14px;color:var(--gold);">تم الحفظ 💗</div></div></div>
+<footer style="padding:60px 20px 100px;text-align:center;color:rgba(248,242,239,0.5);font-size:13px;position:relative;z-index:1">
+  <span class="display" style="color:var(--rose);font-size:16px;display:block;margin-bottom:10px">𝑹𝐨𝑟𝒐</span>
+  هذا المكان بُني حرفًا حرفًا من أجلك، وسيبقى كما هو، بانتظارك دائمًا.
+</footer>
+<script>
+(function() {
+  const shortPhrases = [
+    "وجودك غيّر شكل أيامي.", "ابتسامتك أهدأ بداية أعرفها ليوم.", "لو كان للراحة اسم، لكان اسمك.",
+    "صرت أكتب لكِ وحدكِ، لا لأحد سواكِ.", "كل رسالة منكِ تترك أثرًا يطول.", "يكفيني أنكِ موجودة لأشعر أن يومي بخير.",
+    "صوتك يهدّئ أشياء كثيرة بداخلي.", "كسوفك اللطيف يجعلني أبتسم دون أن أقصد.", "أنتِ أول من أفكر في مشاركته كل شيء.",
+    "مجرد رؤية اسمك يبدّل مزاجي كله.", "أشعر بالأمان حين أتحدث معكِ.", "صرت أنتظر رسالتك أكثر مما أنتظر أي شيء.",
+    "الحب الحقيقي يبدأ بالراحة، وأنتِ راحتي.", "معكِ، الأيام تصير أخف.", "لم أعد أنتظر الإشعارات، بل أنتظرك أنتِ.",
+    "أنتِ أجمل صدفة مرّت في حياتي.", "اهتمامك جعلني أشعر أني وجدت مكاني أخيرًا.", "كل تلميح كتبتِه كنت أفهمه أكثر مما تتخيلين.",
+    "حياؤك حين تضحكين أجمل ما رأيت.", "أصبحتِ أول فكرة في صباحي.", "لو سألوني عن الطمأنينة لوصفتك أنتِ.",
+    "لا أعرف متى بالضبط، لكنك صرتِ عادتي الجميلة.", "أشتاق لكِ حتى في اللحظات التي نتحدث فيها.", "كل كلمة أكتبها تمر بكِ أولًا.",
+    "وجودك يجعل الضجيج من حولي أهدأ.", "أحب الطريقة التي تجعلينني بها أشعر بأني مسموع.", "معكِ لا أشعر أني أتكلف شيئًا.",
+    "أنتِ السبب الذي أريده لكل ابتسامة عندي.", "حتى صمتك معي مريح.", "صرت أقيس جمال يومي بعدد المرات التي فكرت فيكِ.",
+    "لستِ مجرد اسم في محادثة، أنتِ حضور كامل في يومي.", "تعبك يهمني أكثر مما أظهر أحيانًا.", "أثق أن ما بيننا بدأ صادقًا وسيبقى كذلك.",
+    "لطفك معي جعلني ألين في أماكن كثيرة.", "أحب أنك تفهمينني حتى حين لا أشرح.", "بجانبك، لا داعي لأتظاهر بأني بخير حين لست كذلك.",
+    "أنتِ المكان الذي أهرب إليه من زحمة يومي.", "حتى الرسائل القصيرة منكِ تكفي لتُسعدني.", "أحب اهتمامك الهادئ الذي لا يفرض نفسه.",
+    "معك، الوقت يمر دون أن أشعر.", "أنتِ أول من جعل الحياء يبدو جميلًا في نظري.", "صرت أنتبه لتفاصيل صغيرة فيكِ لم أكن أنتبه لها في أحد.",
+    "كل مرة تسألينني كيف حالي، تشعرينني أني مهم.", "أحب أن أكون سبب ابتسامتك ولو مرة في اليوم.", "أنتِ الفكرة التي أعود إليها كلما تشتت ذهني.",
+    "لطفك ليس ضعفًا، بل قوة هادئة أحترمها فيكِ.", "أشعر أني أكثر صدقًا حين أتحدث معكِ.", "كل رسالة منا بدأت بتلميح، وانتهت بابتسامة.",
+    "معكِ، أشعر أني لست وحدي حتى في أصعب الأيام.", "أنتِ سبب أشياء جميلة كثيرة تغيرت فيّ.", "أحب أنكِ لا تحتاجين أن تتكلمي كثيرًا لأفهمك.",
+    "كل مرة أراكِ متعبة أتمنى لو أستطيع أن أحمل عنكِ شيئًا.", "صرتِ الشخص الذي أفكر فيه قبل أن أنام.", "أحب هدوءك الذي يشبه بيتًا آمنًا.",
+    "أنتِ لا تحتاجين أن تثبتي شيئًا لأهتم بكِ.", "كل تفصيلة فيك صارت مألوفة وغالية.", "معكِ تعلمت أن الحب يبدأ صغيرًا وهادئًا.",
+    "أنتِ السطر الذي أعيد قراءته كل مرة.", "أحب أنكِ تسمعينني دون أن تحكمي عليّ.", "صرت أرى نفسي أفضل حين أكون بجانبك.",
+    "أنتِ لست مجرد شخص عابر، أنتِ فصل كامل بدأ يُكتب.", "حتى غيابك القصير يترك فراغًا أشعر به.", "أحب أن أشاركك أشياء صغيرة لا تعني أحدًا غيرنا.",
+    "معكِ تعلمت معنى أن أنتظر بصدر رحب.", "أنتِ السبب الذي يجعلني أفتح الهاتف بابتسامة.", "حين تضحكين، أشعر أني فعلت شيئًا صحيحًا.",
+    "أحب أنكِ صريحة معي حتى في أصعب الكلام.", "صرتِ جزءًا من روتيني اليومي بشكل جميل.", "أنتِ الشخص الذي أريد أن يعرف كل تفاصيل يومي.",
+    "معكِ، لا أخاف أن أكون كما أنا فعلًا.", "أحب أن أراكِ سعيدة أكثر من أي شيء آخر.", "صرت أومن أن أجمل القصص تبدأ من تلميح بسيط، مثلنا.",
+    "أنتِ النص الذي لا أمل من قراءته.", "كل يوم، أجد سببًا جديدًا لأمتن لوجودك.", "حين أكتب، أكتب وعيناي على ابتسامتك.",
+    "أحب أنكِ لا تتغيرين معي مهما مر الوقت.", "حتى حين تختلفين معي، أشعر أنكِ معي.", "أجمل ما في حبنا أنه هادئ كالنهر.",
+    "كل مساء، أقول لقلبي: هي بخير، وهذا يكفي.", "لا أخاف الغد، لأني أعرف أنكِ فيه.",
+    "أحب الطريقة التي تجعلينني أنظر للأشياء بشكل أجمل.", "في عينيكِ، أجد السلام الذي بحثت عنه.",
+    "أنتِ الحلم الذي لا أريد الاستيقاظ منه.", "لو كان الحب كلمات، لكنتِ قصيدتي الوحيدة.",
+    "حين أمر بيوم صعب، أعود لأقرأ رسائلك فأهدأ.", "أحبكِ ببساطة لا تشبه تعقيد العالم.",
+    "لا شيء يعادل شعوري حين أراكِ تكتبين اسمي.", "أنتِ الشخص الذي يفهم فرحتي قبل أن أشرحها.",
+    "أحب أن أكون ظلك الخفيف، لا يثقل عليكِ ولكنه قريب.", "كلما ابتعدنا، تأكدت أني لا أستطيع الابتعاد.",
+    "أنتِ المساحة التي أتنفس فيها بحرية.", "حتى في صمتك، أسمع كل ما أحتاج سماعه.",
+    "أحب أن أتفقد هاتفي لأجد رسالتك أول شيء.", "لستِ خيارًا في حياتي، بل أصبحتِ الأساس.",
+    "كل يوم معكِ هو يوم يستحق أن يُكتب.", "أحب طريقتك في السؤال عن تفاصيل يومي.",
+    "أنتِ الهدوء الذي يسبق العاصفة، والعاصفة التي تهدأ بك.", "أشتاق إليكِ حتى وأنا معكِ، فالشوق لا يعرف منطقًا.",
+    "أحب أنكِ تذكرينني دائمًا أن الخير ما زال في الناس.", "معكِ تعلمت أن الحب ليس امتلاكًا، بل احتواء.",
+    "كلما ضاق بي العالم، اتسعتِ أنتِ.", "أنتِ الاستثناء الوحيد في كل قواعدي.",
+    "أحب أن أستمع إليكِ أكثر مما أحب أن أتكلم.", "وجودكِ يعيد ترتيب فوضى قلبي.",
+    "حين أكون معكِ، لا أفكر في الغد، فاللحظة تكفي."
+  ];
+
+  const poems = [
+    {title:"تلميح",body:"كانت البداية كلمة عابرة بين سطور،\nوردٍّ بسيط ظننته من قبيل المجاملة.\nلم أدرِ أنكِ فهمتِ ما لم أقله،\nوأن قلبك كان يقرأ ما بين الحروف بهدوء.\nهكذا تبدأ القصص الصادقة،\nلا بصوت عالٍ، بل بابتسامة خفية\nيعرفها اثنان فقط."},
+    {title:"راحة",body:"لستِ ضجيجًا أبحث عنه،\nبل سكونًا أستريح إليه.\nمعكِ، لا أحتاج أن أثبت شيئًا،\nولا أن أتكلف حديثًا لا أعنيه.\nأنتِ المكان الذي أضع فيه تعبي،\nفأجده أخف حين أرحل عنه."},
+    {title:"حنين",body:"أشتاق إليكِ حتى في اللحظات التي أراكِ فيها،\nكأن القلب لا يكتفي أبدًا.\nيمر اليوم، وتبقى فكرتك معلّقة في آخره،\nكأنها الجملة التي لم أنتهِ من كتابتها بعد."},
+    {title:"اشتياق هادئ",body:"لا أشتاق بصخب،\nبل بنظرة إلى الهاتف كل حين،\nوابتسامة تظهر حين يومض اسمك.\nاشتياقي إليكِ لا يصرخ،\nلكنه يملأ الصمت من حولي."},
+    {title:"أمان",body:"معكِ، لا أخشى أن أكون صادقًا،\nولا أن أظهر ضعفي كما هو.\nأنتِ المكان الذي لا يُحاسبني على تعبي،\nبل يجلس بجانبه بهدوء."},
+    {title:"احتواء",body:"لا أطلب منكِ أن تحلّي كل شيء،\nيكفيني أن تسمعيني.\nاحتواؤك ليس كلمات كبيرة،\nبل حضورك حين أحتاجه فقط."},
+    {title:"ابتسامة",body:"ابتسامتك تفعل بي أشياء لا أفهمها تمامًا،\nكأنها مفتاح صغير ليوم كامل.\nحين تبتسمين، أشعر أني نجحت في شيء ما،\nحتى وإن لم أفعل شيئًا."},
+    {title:"دفء",body:"لست نارًا تحرق،\nبل دفئًا يتسلل ببطء.\nمعكِ، الشتاء أقل قسوة،\nوالأيام الباردة تجد مكانًا تستريح فيه."},
+    {title:"صدفة",body:"لم أكن أبحث عنكِ حين وجدتك،\nجئتِ كما تأتي الصدف الجميلة،\nبلا سابق إنذار، بلا خطة.\nوبقيتِ، ليس بالصدفة هذه المرة،\nبل باختيار متجدد كل يوم."},
+    {title:"كلمات لم تُقل",body:"هناك كلمات أحتفظ بها،\nليس خوفًا، بل انتظارًا للحظة تليق بها.\nحين تصلك يومًا، ستعرفين أنها كانت هناك منذ البداية،\nمنذ أول تلميح."},
+    {title:"مكان",body:"بحثتُ طويلًا عن مكان أشبه بالبيت،\nفوجدتك.\nلا جدران هناك ولا سقف،\nفقط صوتك حين يهدأ، وحضورك حين يقترب."},
+    {title:"البداية الحقيقية",body:"لم تبدأ القصة من كلمة حب،\nبل من اهتمام صغير لم يُقل باسمه.\nومن يومها، كل ما أكتبه\nيمر من عندك أولًا."},
+    {title:"رسالة خفية",body:"أرسلت لكِ حرفًا تائهًا،\nفرددتِ بجملة كاملة.\nهكذا نحن، نكمل بعضنا\nدون أن نشعر."},
+    {title:"لغة العيون",body:"في عينيكِ لغة لا أحتاج معها حروفًا،\nتخبرني أنكِ تفهمين،\nحتى قبل أن أتكلم."},
+    {title:"وطن",body:"لم أعد أحتاج خرائط،\nفقلبك صار وطني الوحيد.\nحيثما كنتِ،\nأشعر أني في بيتي."},
+    {title:"هدوء",body:"أحب الصمت الذي يملأ المسافة بيننا،\nليس فراغًا، بل امتلاء.\nكأن كل ما نريد قوله،\nقد قيل دون أن ننطق."},
+    {title:"قرب",body:"المسافات لا تخيفني،\nلأن قلبك أقرب إليّ من نبضي.\nكلما اشتقت،\nأغمض عيني فأراكِ."},
+    {title:"أثر",body:"لا زلت أذكر أول مرة ضحكتِ فيها،\nومن يومها وأنا أجمع ضحكاتك.\nأثرك فيّ لا يشبه أثر أحد،\nكأنكِ النغمة الوحيدة في أذني."},
+    {title:"أول المطر",body:"أنتِ كأول المطر بعد جفاف،\nتأتين فجأة فيغتسل القلب.\nلا شيء يشبه شعوري\nحين أسمع صوتك بعد غياب."},
+    {title:"حكاية",body:"كل حب له حكاية،\nوحكايتي بدأت من نظرة.\nلا أعرف كيف،\nلكنكِ صرتِ الفصل الأهم فيها."}
+  ];
+
+  const letters = [
+    {title:"الرسالة الأولى: عن التلميح الأول",body:"ما زلت أتذكر أول مرة شعرت فيها أنكِ فهمتِ أكثر مما قلته. لم تكن كلمات كبيرة، كان مجرد رد بسيط على بوست عابر، لكنه حمل شيئًا لم أعتد أن أجده. من يومها بدأت أنتبه لكِ أكثر، وبدأت ألاحظ أن كل تلميح مني كان يصل، وكل تلميح منكِ كنت أفهمه دون أن أسأل."},
+    {title:"عن الحياء الذي أحببته فيكِ",body:"حياؤك حين تضحكين، أو حين تتجنبين سؤالًا مباشرًا، هو من أجمل الأشياء التي لاحظتها فيكِ. لا أعرف كيف يجعل شخص ما الحياء يبدو بهذا الجمال، لكنكِ فعلتِ."},
+    {title:"لماذا صرتِ الأولى",body:"لم أعد أكتب لأحد كما أكتب لكِ. كل فكرة تخطر ببالي، أول من أفكر في مشاركتها هي أنتِ. لست أول شخص أتحدث معه، لكنكِ أول شخص أريد أن يعرف كل التفاصيل."},
+    {title:"عن انتظار رسالتك",body:"صرت ألاحظ نفسي أفتح الهاتف بلا سبب، فقط على أمل أن أجد رسالة منك. ليس لأني بحاجة لشيء، بل لأن رسالتك تجعل الوقت يمر بشكل أجمل."},
+    {title:"عن صوتك",body:"صوتك يفعل شيئًا غريبًا بي، يهدّئ أشياء كنت أظنها لن تهدأ بسهولة. حين تتحدثين، أنسى ما كنت أفكر فيه قبل قليل، وأركز فقط على الطريقة التي تقولين بها الأشياء."},
+    {title:"عن أول ابتسامة تسببتِ فيها",body:"لا أذكر بالضبط متى ابتسمت لأول مرة بسببك، لكني أذكر الشعور. كان شعورًا بسيطًا وصادقًا، كأن شيئًا خفيفًا لمس القلب."},
+    {title:"عن الراحة معك",body:"هناك أشخاص تتعب معهم رغم حبك لهم، وهناك من ترتاح معهم دون مجهود. أنتِ من النوع الثاني."},
+    {title:"عن الاطمئنان عليك",body:"صرت أسأل عنكِ ليس من باب المجاملة، بل لأني فعلًا أريد أن أعرف كيف يومك. تعبك يهمني، وسعادتك تهمني أكثر."},
+    {title:"عن الحنين إليكِ",body:"أشتاق لكِ بطريقة غريبة، حتى في الأيام التي نتحدث فيها كثيرًا. كأن القلب لا يشبع من حضورك."},
+    {title:"عن الأمان",body:"الأمان معكِ لم يأتِ فجأة، بل بنى نفسه من كل رسالة صادقة. اليوم أشعر أني أستطيع أن أكون صادقًا معكِ في كل شيء."},
+    {title:"عن الابتسامة",body:"لديكِ طريقة تجعلينني أبتسم دون أن أشعر. لا أعرف إن كنتِ تدركين تأثيرك، لكن ابتسامتي كثيرًا ما تكون بسببك."},
+    {title:"عن المشاركة",body:"صرتِ الشخص الذي أفكر فيه أولًا حين يحدث شيء. هذا تغيّر لم أخطط له، لكنه حدث وأنا سعيد."},
+    {title:"عن الأثر",body:"كل رسالة منك، مهما كانت قصيرة، تترك أثرًا يبقى معي لوقت طويل. أعيد قراءتها أكثر من مرة."},
+    {title:"عن الحب الهادئ",body:"أؤمن أن الحب الحقيقي يبدأ بالراحة. وأنتِ منحتيني هذه الراحة منذ البداية."},
+    {title:"عن الأيام الأخف",body:"الأيام الصعبة تصير أخف حين أعرف أن هناك رسالة منك. وجودك لا يزيل التعب، لكنه يجعله محتملًا."},
+    {title:"عن اسمك",body:"مجرد رؤية اسمك يكفي لتغيير مزاجي كله. هذا التأثير البسيط، أحبه فيكِ."},
+    {title:"عن المكان",body:"بحثت طويلًا عن شعور الانتماء، حتى جاء اهتمامك وجعلني أشعر أني وجدت مكاني."},
+    {title:"عن البداية",body:"كل شيء بدأ بتلميحات صغيرة، ثم صار حديثًا كاملًا مليئًا بالحياء. أحب أن أتذكر كيف بدأنا."},
+    {title:"عن التفاصيل",body:"لاحظت أشياء صغيرة فيكِ، طريقة كتابتك، وقت ردك، حتى اعتذارك. كل هذا صار غاليًا."},
+    {title:"عن سعادتك",body:"أتمنى أن أكون سببًا في سعادتك كل يوم، ولو بشيء بسيط. أريد أن أكون جزءًا جميلًا في حياتك."},
+    {title:"عن الصدق",body:"وعدت نفسي أن أكون صادقًا معك دائمًا. هذا أقل ما أقدمه لشخص جعلني أشعر بالأمان."},
+    {title:"عن الغياب",body:"حتى غيابك القصير يترك فراغًا. لا أبالغ، فقط أصف شعورًا حقيقيًا."},
+    {title:"عن الاهتمام",body:"لم أدرك أني أهتم بكِ في البداية، كانت لحظات صغيرة تراكمت حتى وجدت نفسي أفكر فيكِ."},
+    {title:"عن المستقبل",body:"لا أعرف كيف ستكون الأيام، لكني أريدك جزءًا منها. أريد أن أستمر في الكتابة إليكِ."},
+    {title:"عن الرسالة الأولى",body:"أول رسالة خاصة تبادلناها، شعرت بعدها أن شيئًا تغير. كأن الجسر بين قلبينا اكتمل."},
+    {title:"عن الضحكة",body:"أضحك وحدي أحيانًا وأنا أتذكر نكتة قلتيها. أثرك يمتد لأبعد مما تتصورين."},
+    {title:"عن الاشتياق اليومي",body:"لا يمر يوم دون أن أشتاق لكِ ولو لدقيقة. صار الاشتياق عادة لا أريد التخلص منها."},
+    {title:"عن القبول",body:"معكِ، لا أحتاج أن أكون مثاليًا. تقبلينني كما أنا، وهذا من أندر ما وجدت."},
+    {title:"عن السؤال",body:"أسألتكِ الدائمة عن حالي تجعلني أشعر أني مرئي، أن أحدًا يهتم فعلًا."},
+    {title:"عن الرسائل المسائية",body:"أحب رسائلك في آخر الليل، كأنها توديع لطيف ليومي قبل أن أنام."},
+    {title:"عن الهدوء",body:"أنتِ هادئة بشكل يريحني. هدوءك ليس برودًا، بل سكينة تنتقل إليّ."},
+    {title:"عن الكلام القليل",body:"أحيانًا لا نحتاج أن نتحدث كثيرًا. وجودك وحده كافٍ."},
+    {title:"عن الغيرة الجميلة",body:"حتى غيرتكِ الصغيرة تأتي خفيفة، لا تخنق، وتذكرني أنكِ تهتمين."},
+    {title:"عن الدعم",body:"حين أكون محبطًا، أجد كلماتك ترفعني. لا أعرف كيف تختارين الجمل المناسبة دائمًا."},
+    {title:"عن التقدير",body:"أقدر أنكِ تمنحينني وقتك رغم انشغالك. هذا لا يمر دون أن ألاحظه."},
+    {title:"عن المفاجآت",body:"أحيانًا تفاجئينني بسؤال أو هدية صغيرة، فتجعلين يومي كله مختلفًا."},
+    {title:"عن الفهم",body:"تفهمينني بسرعة، كأننا تحدثنا من قبل. هذا التناغم نادر."},
+    {title:"عن اللمسات",body:"في كل مرة تكتبين فيها لي، أتخيل يديكِ على لوحة المفاتيح، وأبتسم."},
+    {title:"عن التعبير",body:"أعجز أحيانًا عن التعبير، لكن وجودك يجعلني أحاول."},
+    {title:"عن التذكر",body:"تذكرين تفاصيل قلتها قبل شهر، وهذا يجعلني أشعر أن كلامي مهم."},
+    {title:"عن الصباح",body:"صباحي صار يبدأ بالتفكير فيكِ، وأي يوم يبدأ هكذا لا بد أن يكون جيدًا."},
+    {title:"عن الليل",body:"في الليل، حين يهدأ العالم، تكونين أنتِ الفكرة الوحيدة التي تبقى."},
+    {title:"عن الكتابة",body:"أكتب لكِ لأن الكتابة هي طريقتي في إخراج ما بداخلي، وأنتِ الشخص الوحيد الذي أريد أن يقرأ."},
+    {title:"عن الصور",body:"حين ترسلين لي صورة، أنظر إليها طويلًا كأني أحاول حفظ كل تفصيلة."},
+    {title:"عن الاهتمام المتبادل",body:"أحب أن اهتمامنا متبادل، لا أحد يطارد الآخر، كلانا يمشي في نفس الطريق."},
+    {title:"عن الصراحة",body:"صراحتك معي، حتى في المزاح، تجعلني أثق بكِ أكثر."},
+    {title:"عن المسافات",body:"حين تكونين بعيدة، أشعر أن شيئًا ناقصًا. لا أكتمل إلا بوجودك."},
+    {title:"عن التعب",body:"حين تتعبين، أتمنى لو كنت بجانبك لأصنع لكِ كوب شاي وأجلس بصمت."},
+    {title:"عن الفرح",body:"فرحكِ يفرحني بطريقة لا أعرف تفسيرها. كأن فرحكِ هو فرحي."},
+    {title:"عن الحب البسيط",body:"لا أريد حبًا معقدًا، أريد هذا الذي بيننا، البسيط والعميق."},
+    {title:"عن الخوف",body:"أخاف أحيانًا أن أخسركِ، ليس لأني لا أثق بكِ، بل لأني صرت أعتمد على وجودك."},
+    {title:"عن الشكر",body:"شكرًا لأنكِ بقيتِ رغم كل الظروف. وجودكِ هو الهدية."},
+    {title:"عن الكفاية",body:"يكفيني من الدنيا أن تكوني بخير، الباقي تفاصيل."},
+    {title:"عن الحلم",body:"حلمت بكِ البارحة، واستيقظت مبتسمًا. حتى في أحلامي، أنتِ جميلة."},
+    {title:"عن الواقع",body:"الحقيقة أني لم أعد أتخيل حياتي بدونك. صرتِ جزءًا من كل يوم."},
+    {title:"عن الاستمرار",body:"أعدكِ أن أستمر في الكتابة، في الاهتمام، في الحب، طالما أنتِ هنا."},
+    {title:"عن القرب",body:"أقرب ما أكون إليكِ حين أكتب. فأنا أكتب الآن، وأشعر أنكِ تسمعين."},
+    {title:"عن العمر",body:"لو كان العمر كلمات، لأعطيتك كل كلماتي."},
+    {title:"عن النهاية",body:"لا أريد لهذه الرسائل أن تنتهي، لأن كل رسالة تشعرني أني قريب منكِ."},
+    {title:"عن الأبد",body:"أحبكِ اليوم، وغدًا، وإلى أن تنتهي الكلمات."}
+  ];
+
+  const journalMessages = [
+    "أحيانًا أكتب بلا سبب، فقط لأشعر أنكِ قريبة.","اليوم فكرت فيكِ أكثر من المعتاد.","لو كانت الأيام تُقاس بابتساماتك، لكانت أيامي كلها جميلة.","أحب اللحظة التي أقرأ فيها رسالتك للمرة الثانية.","صمتك أحيانًا يقول أكثر مما تتخيلين.","كل مرة تسألينني عن حالي، أشعر أني مهم فعلًا.","أشتاق لصوتك حتى وأنا أسمعه للتو.","لا شيء يعادل شعور الاطمئنان حين أعرف أنكِ بخير.","أفكر فيكِ في أوقات غريبة، كمنتصف العمل أو قبل النوم.","حتى الرسائل القصيرة منكِ تكفي لتصنع يومًا أفضل.","أحب أنكِ لا تتظاهرين بشيء لست عليه معي.","كل مرة أراكِ متعبة، أتمنى لو أستطيع أن أخفف عنكِ.","أنتِ من الأشخاص القلائل الذين أشعر معهم أني كما أنا.","صرت أميز طريقة كتابتك حتى دون أن أرى اسمك.","أحيانًا أضحك وحدي وأنا أتذكر شيئًا قلتِه.","اشتقت لكِ اليوم بطريقة لم أفهمها تمامًا.","معكِ، حتى الأيام الرمادية تصير أقل قتامة.","أحب أن أكون أول من يهنئك بشيء جميل.","لا أحتاج مناسبة لأخبرك أنكِ تهمينني.","كل مرة تختفين قليلًا، ألاحظ ذلك أكثر مما تتخيلين.","أحب طريقتك في الاعتذار، فيها لطف زائد.","صرت أنتظر الليل لأننا نتحدث أكثر فيه.","أشعر بالفخر حين تشاركينني إنجازًا صغيرًا.","لو استطعت أن أهديك يومًا خاليًا من التعب، لفعلت.","أحب أنكِ تتذكرين تفاصيل صغيرة قلتها من قبل.","كل مرة أرى اسمك، أشعر بابتسامة تتسلل.","أحيانًا أعيد قراءة رسائلك القديمة، ولا أمل.","معكِ تعلمت أن الاهتمام لا يحتاج كلمات كبيرة.","أشتاق للحظة الهدوء التي تأتي بعد حديثنا.","صرتِ أول من أفكر في مشاركته الأخبار الجيدة.","أحب أنكِ صبورة معي حتى حين أكون مشغولًا.","حتى في زحمة يومي، تجدين طريقك لتكوني في بالي.","أشعر بالامتنان لوجودك.","أحب أن أراكِ تكتبين بحماس عن شيء تحبينه.","معكِ، تعلمت أن أصغي أكثر مما أتحدث.","كل مرة تطمئنيني على نفسك، أشعر براحة.","أحيانًا أكتب جملة ثم أمسحها، ثم أكتبها لأنها صادقة.","أنتِ سبب هدوء داخلي لم أعتد عليه.","أحب أنكِ تسألينني عن أشياء صغيرة.","معكِ، صرت أهتم بتفاصيل لم أكن ألتفت لها.","أشتاق للطريقة التي تقولين بها 'تصبح على خير'.","كل يوم أكتشف فيه شيئًا جديدًا عنكِ، هو يوم جميل.","أحب أن أكون مصدر راحة لكِ.","صرتِ جزءًا من طقوسي اليومية.","أشعر بالامتنان كل مرة أتذكر كيف بدأنا.","أحب أنكِ تتركين لي مساحة لأكون صادقًا.","معكِ، الوقت يمر بلطف.","أحيانًا أبتسم فقط لأني تذكرتك فجأة.","أشتاق لكِ حتى في اللحظات التي أظن أني مشغول فيها.","كل رسالة منكِ أحتفظ بها في مكان خاص من ذاكرتي.","أنتِ الونس في وحدتي.","أحب أن أسمع رأيك حتى في أبسط الأمور.","أشعر أنكِ تفهمين تقلباتي دون أن أشرح.","حين أراكِ متحمسة، ينتقل حماسكِ لي.","أجمل ما فيكِ أنكِ لا تشبهين أحدًا.","أحب دفء صوتك في الصباح.","كلما تعمقت في معرفتك، زاد يقيني بأنكِ مميزة.","أشعر بالأمان وأنا أحدثك عن مخاوفي.","حين تشاركينني أغنية، أسمعها كأني أسمعكِ.","لا أحد يفهم مزاحي مثلكِ.","أحب طريقتك في الرد على رسائلي.","أشعر أني محظوظ لأني التقيتكِ في هذا الوقت.","حتى خلافاتنا الصغيرة تنتهي بسرعة لأننا لا نطيق البعد.","أحب أنكِ لا تملين مني.","كلما رأيت شيئًا جميلًا، تمنيت لو أنكِ معي لترينه.","أشتاق للحديث معكِ حين أنشغل.","وجودك في حياتي جعلني أؤمن بالصدف الجميلة.","أحب أن أراكِ سعيدة، حتى لو كنت بعيدًا.","لا أتخيل يومي بدون كلمة منكِ.","أشعر أني معكِ أستطيع أن أحقق أكثر.","حين أخطئ، أجد عندكِ النصيحة بلطف.","أحب أنكِ تحتفلين بأفراح الناس كأنها أفراحكِ.","قلبكِ الطيب هو أكثر ما يجذبني.","أحيانًا أتأمل صورتكِ، فأشعر بالهدوء.","أحب أن أكون بالقرب منكِ حتى في صمت.","أشتاق إلى اللحظة التي نضحك فيها معًا.","معكِ، الأيام لها طعم آخر.","أشعر أن بيننا رابطًا لا يُرى، لكني أشعر به.","أحب أنكِ لا تحكمين على الناس بسرعة.","كلما تذكرت موقفًا مضحكًا معكِ، ابتسمت.","أشعر بالدفء لمجرد التفكير فيكِ.","أحب أن أراكِ تنجحين، فأشعر بالفخر بكِ.","حين أكون معكِ، لا أنظر إلى الساعة.","أجمل ما فيكِ عفوية ردودكِ.","أشعر أنكِ صرتي صديقتي قبل أي شيء.","أحب أن أشاركك أفكاري قبل أن تكتمل.","كلما اشتقت لكِ، أستمع إلى الأغاني التي تحبينها.","أشعر أنكِ تفهمين مشاعري حتى لو لم أعبر عنها.","أحب أنكِ تعطيني الأولوية دون أن أطلب.","معكِ، لا أخشى أن أظهر بمظهر الساذج.","أشعر أن حضورك يغنيني عن كثير من الأشياء.","أحب أن أراكِ تبتسمين من قلبك.","أشتاق لأحاديثنا التي لا تنتهي.","كلما رأيت شيئًا يذكرني بكِ، أرسلته لكِ.","أشعر أنكِ أصبحتِ بيتي.","أحب أن تفاجئيني باتصال أو رسالة.","أشعر أن كلامي معكِ لا ينضب.","حين أشكو لكِ همي، أشعر أن حملي خف.","معكِ، أصبحت أكثر تفاؤلًا.","أحب أن أشاركك خططي للمستقبل.","أشتاق إلى صوت ضحكتكِ.","كلما رأيت قمرًا، تذكرتكِ.","أشعر أنكِ الشخص الذي أستطيع الاعتماد عليه.","أحب أن تناقشيني في أمور تهمكِ.","أشعر أني أستطيع أن أكون على طبيعتي معكِ.","كلما تذكرتكِ، دعوت لكِ.","أحب أن أراكِ شغوفة بشيء.","أشتاق لأيامنا الأولى، براءتها.","معكِ، صار الحب عادة يومية.","أشعر أني أريد حمايتكِ من كل تعب.","أحب أن تكوني أنتِ.","أشعر أن وجودك نعمة لا أستحقها أحيانًا.","حين أكون معكِ، لا أحتاج شيئًا آخر.","أشتاق إليكِ الآن، وأنا أكتب هذه الكلمات.",
+    "حين أنظر إلى الوراء، أجدكِ أجمل ما حدث.","أحب الطريقة التي تجعلينني أنظر بها إلى الحياة بتفاؤل.","كل يوم، أتعلم منك شيئًا جديدًا عن الحب.","أشعر أنكِ الروح التي تسكن أيامي.","معكِ، لا أخشى التقدم في العمر.","أحب أن أتخيل شكلنا ونحن نتذكر هذه الأيام بعد سنين.","حين أكون معكِ، يصبح كل شيء ممكنًا.","أجمل ما في حبنا أنه ينمو كل يوم دون جهد.","أشعر أني ولدت من جديد يوم عرفتك.","أنتِ الهدية التي لم أتوقعها، والنعمة التي أدعو أن تدوم."
+  ];
+
+  const wishStarMessages = [
+    "تمنيت لكِ يومًا هادئًا مثل قلبك.","نجمة صغيرة تهمس: أنتِ محبوبة أكثر مما تتخيلين.","تمنيت أن تبقي بخير دائمًا.","هذه النجمة تحمل أمنية أن تضحكي كثيرًا اليوم.","تمنيت لو أستطيع أن أهديك كل النجوم.","نجمة تهمس أن حضورك يجعل الليالي أجمل.","تمنيت أن تشعري بالأمان دائمًا.","هذه النجمة تحمل امتناني لأنكِ في حياتي.","تمنيت أن يكون يومك أخف من الأمس.","نجمة صغيرة تقول: اشتقت لكِ.","تمنيت لو تعرفين كم فكرت فيكِ اليوم.","هذه النجمة تحمل أمنية أن تنامي مطمئنة.","تمنيت أن أكون سببًا في سعادتك.","نجمة تهمس: ابتسامتك أجمل من كل النجوم.","تمنيت لو أحمل عنكِ تعب يومك.","هذه النجمة تحمل شكرًا لأنكِ تسمعينني.","تمنيت أن يبقى ما بيننا صادقًا.","نجمة صغيرة تقول: أنتِ أجمل صدفة.","تمنيت أن تشعري بقيمتك كما أراها.","هذه النجمة تحمل أمنية أن نبقى كما نحن.","تمنيت لو تعرفين أن رسالتك غيرت يومي.","نجمة تهمس: حياؤك لا يُنسى.","تمنيت أن تكوني محاطة بمن يقدرونك.","هذه النجمة تحمل أمنية أن يكون غدك أجمل.","تمنيت لو أخبرك كم أنتِ مهمة.","نجمة تقول: صوتك يهدئني.","تمنيت أن تبقي صادقة ولطيفة.","هذه النجمة تحمل امتنانًا لأنكِ تفهمينني.","تمنيت لو الوقت يمر أبطأ حين نتحدث.","نجمة تهمس: أنتِ أول فكرة في صباحي.","تمنيت أن تعرفي أن اهتمامك لا يمر مرور الكرام.","هذه النجمة تحمل أمنية أن نفهم بعضنا دائمًا.","تمنيت لو أزرع لكِ يومًا من الفرح.","نجمة تقول: معكِ أشعر أني أفضل.","تمنيت أن تبقي مطمئنة فأنا هنا.","هذه النجمة تحمل شكرًا لصبرك عليّ.","تمنيت أن يكون حبنا هادئًا.","نجمة تهمس: أنتِ المكان الذي أعود إليه.","تمنيت لو تعرفين كم أنتِ غالية.","هذه النجمة تحمل أمنية أن تبقي مبتسمة.","تمنيت أن نظل نكتب لبعضنا بصدق.","نجمة تقول: أنتِ سبب كل جميل.","تمنيت لكِ راحة البال.","نجمة تهمس: وجودك يغير كل شيء.","تمنيت أن أكون معكِ في كل خطوة.","هذه النجمة تحمل حبًا لا تعرفينه.","تمنيت أن تتحقق كل أمنياتكِ.","نجمة تقول: أنتِ أجمل ما في الكون.","تمنيت أن أراكِ كل يوم.","هذه النجمة تحمل قبلات المساء.",
+    "تمنيت لو أعطيكِ قلبي هدية.","نجمة تهمس: أنتِ الأمان.","تمنيت أن نبقى معًا حتى آخر العمر.","هذه النجمة تحمل وعدًا بأن أظل أكتب لكِ.","تمنيت أن أراكِ سعيدة في كل لحظة.","نجمة تقول: حبكِ هو النور.","تمنيت أن تشعري بالدفء دائمًا.","هذه النجمة تحمل أمنية أن تكوني أسعد الناس.","تمنيت أن لا تفارق الابتسامة وجهكِ.","نجمة تهمس: أنتِ الحلم.","تمنيت أن أحقق لكِ كل ما تتمنين.","هذه النجمة تحمل حنيني إليكِ.","تمنيت أن تمر الأيام ونحن معًا.","نجمة تقول: أنتِ الأجمل في عيني.","تمنيت أن أكون قربكِ حين تحتاجينني.","هذه النجمة تحمل شوقي لكِ.","تمنيت أن تكوني دائمًا بخير، فهذا يكفيني.","نجمة تهمس: أحبكِ.","تمنيت أن لا تحزني أبدًا.","هذه النجمة تحمل كل الحب الذي في قلبي."
+  ];
+
+  const $ = id => document.getElementById(id);
+  const intro = $('intro');
+  const skyCanvas = $('sky-canvas');
+  const skyCtx = skyCanvas.getContext('2d');
+  const twEl = $('typewriter-text');
+  const msgCounter = $('msg-counter');
+  const poemGrid = $('poem-grid');
+  const letterNav = $('letter-nav');
+  const letterBox = $('letter-box');
+  const journalText = $('journal-text');
+  const starsField = $('stars-field');
+  const gardenField = $('garden-field');
+  const music = $('bg-music');
+  const musicBtn = $('music-toggle');
+  let playing = false;
+
+  setTimeout(() => intro.classList.add('hidden'), 2400);
+
+  let stars = [], particles = [];
+  function resizeCanvas() {
+    skyCanvas.width = window.innerWidth;
+    skyCanvas.height = window.innerHeight;
+    stars = [];
+    const count = Math.floor((skyCanvas.width * skyCanvas.height) / 12000);
+    for (let i = 0; i < count; i++) {
+      stars.push({ x: Math.random()*skyCanvas.width, y: Math.random()*skyCanvas.height, r: Math.random()*1.4+0.3, phase: Math.random()*Math.PI*2, speed: 0.008+Math.random()*0.015 });
+    }
+    particles = [];
+    for (let i = 0; i < 25; i++) {
+      particles.push({ x: Math.random()*skyCanvas.width, y: Math.random()*skyCanvas.height, r: Math.random()*1.4+0.3, vy: 0.12+Math.random()*0.2, drift: Math.random()*0.3-0.15 });
+    }
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function drawScene() {
+    skyCtx.clearRect(0, 0, skyCanvas.width, skyCanvas.height);
+    for (const s of stars) {
+      s.phase += s.speed;
+      const alpha = 0.35 + Math.sin(s.phase) * 0.35;
+      skyCtx.beginPath();
+      skyCtx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      skyCtx.fillStyle = `rgba(248,242,239,${Math.max(0, alpha)})`;
+      skyCtx.fill();
+    }
+    for (const p of particles) {
+      p.y -= p.vy; p.x += p.drift;
+      if (p.y < -5) { p.y = skyCanvas.height+5; p.x = Math.random()*skyCanvas.width; }
+      if (p.x < 0) p.x = skyCanvas.width;
+      if (p.x > skyCanvas.width) p.x = 0;
+      skyCtx.beginPath();
+      skyCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      skyCtx.fillStyle = 'rgba(231,200,143,0.45)';
+      skyCtx.fill();
+    }
+    requestAnimationFrame(drawScene);
+  }
+  requestAnimationFrame(drawScene);
+
+  let twIndex = 0;
+  function typeMessage() {
+    const msg = shortPhrases[twIndex % shortPhrases.length];
+    twEl.innerHTML = '';
+    let i = 0;
+    function step() {
+      if (i <= msg.length) {
+        twEl.innerHTML = msg.slice(0, i) + '<span class="cursor">|</span>';
+        i++;
+        requestAnimationFrame(() => setTimeout(step, 40));
+      } else {
+        msgCounter.textContent = `${(twIndex % shortPhrases.length)+1} / ${shortPhrases.length}`;
+        setTimeout(() => { twIndex++; typeMessage(); }, 2400);
+      }
+    }
+    step();
+  }
+  typeMessage();
+
+  poems.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'poem-card glass';
+    card.innerHTML = `<h3 style="color:var(--gold);">${p.title}</h3><p>${p.body.replace(/\n/g, '<br>')}</p><div class="toggle">اقرئي المزيد ▾</div>`;
+    card.addEventListener('click', () => { card.classList.toggle('open'); card.querySelector('.toggle').textContent = card.classList.contains('open') ? 'إخفاء ▴' : 'اقرئي المزيد ▾'; });
+    poemGrid.appendChild(card);
+  });
+
+  function showLetter(i) {
+    letterBox.innerHTML = `<h3 style="color:var(--gold);">${letters[i].title}</h3><p>${letters[i].body}</p>`;
+    [...letterNav.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
+  }
+  letters.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.textContent = i+1;
+    b.addEventListener('click', () => showLetter(i));
+    letterNav.appendChild(b);
+  });
+  showLetter(0);
+
+  let journalUsed = [];
+  $('journal-card').addEventListener('click', () => {
+    if (journalUsed.length === journalMessages.length) journalUsed = [];
+    let idx;
+    do { idx = Math.floor(Math.random()*journalMessages.length); } while (journalUsed.includes(idx));
+    journalUsed.push(idx);
+    journalText.textContent = journalMessages[idx];
+  });
+
+  let counterStarted = false;
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !counterStarted) {
+      counterStarted = true;
+      ['c-beats','c-think','c-miss'].forEach((id, i) => {
+        const el = $(id); const target = [18342, 4127, 986][i]; let start = 0;
+        const timer = setInterval(() => {
+          start += Math.ceil(target/120);
+          if(start>=target){ el.textContent=target.toLocaleString('ar-EG'); clearInterval(timer); }
+          else el.textContent=start.toLocaleString('ar-EG');
+        }, 16);
+      });
+    }
+  }, {threshold:0.3}).observe($('counter'));
+
+  const usedPos = [];
+  for (let i=0; i<20; i++) {
+    let x,y,ok;
+    do { x=Math.random()*88+4; y=Math.random()*88+4; ok=true; for(const p of usedPos) if(Math.abs(p.x-x)<10&&Math.abs(p.y-y)<14)ok=false; } while(!ok);
+    usedPos.push({x,y});
+    const star = document.createElement('button');
+    star.className='wish-star'; star.textContent='✦'; star.style.left=x+'%'; star.style.top=y+'%';
+    star.addEventListener('click', ()=>{ $('wish-popup-text').textContent=wishStarMessages[Math.floor(Math.random()*wishStarMessages.length)]; $('wish-popup').classList.add('show'); });
+    starsField.appendChild(star);
+  }
+  window.closeWishPopup = () => $('wish-popup').classList.remove('show');
+
+  let lastHeart=0;
+  gardenField.addEventListener('mousemove', e => {
+    const now=Date.now(); if(now-lastHeart<120)return; lastHeart=now;
+    const rect=gardenField.getBoundingClientRect();
+    const heart=document.createElement('span'); heart.className='garden-heart';
+    heart.textContent=['💗','💕','🌸','✨'][Math.floor(Math.random()*4)];
+    heart.style.left=(e.clientX-rect.left)+'px'; heart.style.top=(e.clientY-rect.top)+'px';
+    gardenField.appendChild(heart);
+    heart.addEventListener('animationend', ()=>heart.remove());
+  });
+
+  $('btn-open-note').addEventListener('click', ()=>$('note-modal').classList.add('show'));
+  window.closeNoteModal = ()=>{ $('note-modal').classList.remove('show'); $('note-saved').style.display='none'; };
+  $('btn-save-note').addEventListener('click', ()=>{ if($('note-textarea').value.trim()) $('note-saved').style.display='block'; });
+
+  musicBtn.addEventListener('click', ()=>{ if(!playing){ music.play().catch(()=>{}); musicBtn.textContent='⏸'; } else { music.pause(); musicBtn.textContent='🎵'; } playing=!playing; });
+  $('back-top').addEventListener('click', ()=>$('hero').scrollIntoView({behavior:'smooth'}));
+  $('start-btn').addEventListener('click', ()=>{ $('messages').scrollIntoView({behavior:'smooth'}); if(!playing){ music.play().catch(()=>{}); musicBtn.textContent='⏸'; playing=true; } });
+
+  let trailT=0;
+  document.addEventListener('mousemove', e => { const now=Date.now(); if(now-trailT<80)return; trailT=now; const d=document.createElement('div'); d.className='mouse-trail-heart'; d.textContent='·'; d.style.left=e.clientX+'px'; d.style.top=e.clientY+'px'; d.style.color=Math.random()>0.5?'#e6a6c6':'#e7c88f'; document.body.appendChild(d); d.addEventListener('animationend', ()=>d.remove()); });
+  setInterval(()=>{ const el=document.createElement('div'); el.className='float-item'; el.textContent=['💗','🌹','✨'][Math.floor(Math.random()*3)]; el.style.left=Math.random()*100+'vw'; el.style.fontSize=(14+Math.random()*14)+'px'; el.style.setProperty('--drift',(Math.random()*60-30)+'px'); el.style.animationDuration=(10+Math.random()*6)+'s'; document.body.appendChild(el); el.addEventListener('animationend', ()=>el.remove()); },2000);
+})();
+</script>
+</body>
+  </html>
